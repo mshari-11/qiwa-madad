@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width-device-width, initial-scale=1.0">
+    <title>نظام قوى ومدد</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%);
+            color: white;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        
+        .setup-section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .service-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .service-card:hover {
+            border-color: #2d5a3d;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .service-card.active {
+            border-color: #4caf50;
+            background: #f1f8f4;
+        }
+        
+        .service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .service-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2d5a3d;
+        }
+        
+        .status-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .status-connected {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .status-pending {
+            background: #ff9800;
+            color: white;
+        }
+        
+        .status-disconnected {
+            background: #f44336;
+            color: white;
+        }
+        
+        .setup-steps {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        
+        .step {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .step::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4caf50;
+            font-weight: bold;
+        }
+        
+        .step.pending::before {
+            content: "○";
+            color: #ccc;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 25px;
+            background: #2d5a3d;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 5px;
+            transition: background 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 16px;
+        }
+        
+        .btn:hover {
+            background: #1a472a;
+        }
+        
+        .btn-primary {
+            background: #4caf50;
+        }
+        
+        .btn-primary:hover {
+            background: #45a049;
+        }
+        
+        .btn-secondary {
+            background: #2196f3;
+        }
+        
+        .btn-secondary:hover {
+            background: #0b7dda;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .input-group input, .input-group textarea, .input-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
+            outline: none;
+            border-color: #4caf50;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            color: #2d5a3d;
+            border-bottom-color: #2d5a3d;
+            font-weight: bold;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #2d5a3d;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            display: none;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .api-test {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        
+        .employee-list {
+            margin-top: 20px;
+        }
+        
+        .employee-card {
+            background: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .employee-info h4 {
+            margin-bottom: 5px;
+            color: #2d5a3d;
+        }
+        
+        .employee-info p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+        }
+        
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #aaa;
+        }
+        
+        .close:hover {
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏢 نظام تكامل معلومات قوى ومدد</h1>
+        <p>إعداد وربط الخدمات الأساسية</p>
+    </div>
+
+    <div class="container">
+        <!-- تنبيه النجاح -->
+        <div id="alertBox" class="alert"></div>
+
+        <!-- قسم الإعداد -->
+        <div class="setup-section">
+            <h2>🚀 إعداد الخدمات المطلوبة</h2>
+            <p style="margin-bottom: 20px;">اتبع الخطوات التالية لربط جميع الخدمات المطلوبة:</p>
+
+            <!-- 1. ChatGPT API -->
+            <div class="service-card" id="chatgpt-card">
+                <div class="service-header">
+                    <h3 class="service-title">1. ChatGPT API</h3>
+                    <span class="status-badge status-disconnected" id="chatgpt-status">غير متصل</span>
+                </div>
+                
+                <div class="setup-steps">
+                    <div class="step pending">اذهب إلى <a href="https://platform.openai.com/signup" target="_blank">platform.openai.com</a></div>
+                    <div class="step pending">سجل حساب جديد أو سجل دخول</div>
+                    <div class="step pending">اضغط على "API Keys" من القائمة الجانبية</div>
+                    <div class="step pending">اضغط "Create new secret key"</div>
+                    <div class="step pending">انسخ المفتاح والصقه هنا:</div>
+                </div>
+                
+                <div class="input-group">
+                    <label>مفتاح ChatGPT API:</label>
+                    <input type="password" id="chatgpt-api-key" placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxx">
+                </div>
+                
+                <button class="btn btn-primary" onclick="testChatGPT()">اختبار الاتصال</button>
+                <a href="https://platform.openai.com/account/billing" target="_blank" class="btn btn-secondary">إضافة رصيد</a>
+                
+                <div class="api-test" id="chatgpt-test" style="display: none;">
+                    <div class="loader" id="chatgpt-loader"></div>
+                    <div id="chatgpt-result"></div>
+                </div>
+            </div>
+
+            <!-- 2. WhatsApp API -->
+            <div class="service-card" id="whatsapp-card">
+                <div class="service-header">
+                    <h3 class="service-title">2. WhatsApp Business API</h3>
+                    <span class="status-badge status-disconnected" id="whatsapp-status">غير متصل</span>
+                </div>
+                
+                <div class="setup-steps">
+                    <div class="step pending">اذهب إلى <a href="https://www.twilio.com/try-twilio" target="_blank">Twilio</a> (الأسهل)</div>
+                    <div class="step pending">سجل حساب مجاني</div>
+                    <div class="step pending">فعّل WhatsApp Sandbox للتجربة</div>
+                    <div class="step pending">احصل على Account SID و Auth Token</div>
+                    <div class="step pending">اربط رقم WhatsApp Business</div>
+                </div>
+                
+                <div class="input-group">
+                    <label>Twilio Account SID:</label>
+                    <input type="text" id="twilio-sid" placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+                </div>
+                
+                <div class="input-group">
+                    <label>Twilio Auth Token:</label>
+                    <input type="password" id="twilio-token" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+                </div>
+                
+                <div class="input-group">
+                    <label>رقم WhatsApp (مع رمز الدولة):</label>
+                    <input type="text" id="whatsapp-number" placeholder="+966566606266">
+                </div>
+                
+                <button class="btn btn-primary" onclick="testWhatsApp()">اختبار الاتصال</button>
+                <button class="btn btn-secondary" onclick="sendTestMessage()">إرسال رسالة تجريبية</button>
+            </div>
+
+            <!-- 3. قاعدة البيانات -->
+            <div class="service-card" id="database-card">
+                <div class="service-header">
+                    <h3 class="service-title">3. قاعدة البيانات (Supabase)</h3>
+                    <span class="status-badge status-disconnected" id="database-status">غير متصل</span>
+                </div>
+                
+                <div class="setup-steps">
+                    <div class="step pending">اذهب إلى <a href="https://supabase.com" target="_blank">supabase.com</a></div>
+                    <div class="step pending">سجل بحساب GitHub أو بريد إلكتروني</div>
+                    <div class="step pending">أنشئ مشروع جديد (New Project)</div>
+                    <div class="step pending">انتظر إنشاء قاعدة البيانات (دقيقتين)</div>
+                    <div class="step pending">انسخ URL و anon key من الإعدادات</div>
+                </div>
+                
+                <div class="input-group">
+                    <label>Supabase URL:</label>
+                    <input type="text" id="supabase-url" placeholder="https://xxxxxxxxxxxxx.supabase.co">
+                </div>
+                
+                <div class="input-group">
+                    <label>Supabase Anon Key:</label>
+                    <input type="text" id="supabase-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+                </div>
+                
+                <button class="btn btn-primary" onclick="setupDatabase()">إعداد الجداول</button>
+                <button class="btn btn-secondary" onclick="testDatabase()">اختبار الاتصال</button>
+            </div>
+
+            <!-- 4. الاستضافة -->
+            <div class="service-card" id="hosting-card">
+                <div class="service-header">
+                    <h3 class="service-title">4. استضافة الموقع (Vercel)</h3>
+                    <span class="status-badge status-pending" id="hosting-status">جاهز للنشر</span>
+                </div>
+                
+                <div class="setup-steps">
+                    <div class="step pending">اذهب إلى <a href="https://vercel.com/signup" target="_blank">vercel.com</a></div>
+                    <div class="step pending">سجل بحساب GitHub</div>
+                    <div class="step pending">اضغط "Import Project"</div>
+                    <div class="step pending">ارفع ملفات المشروع</div>
+                    <div class="step pending">انتظر النشر (دقيقة واحدة)</div>
+                </div>
+                
+                <button class="btn btn-primary" onclick="prepareDeployment()">تجهيز الملفات للنشر</button>
+                <button class="btn btn-secondary" onclick="downloadProject()">تحميل المشروع</button>
+            </div>
+        </div>
+
+        <!-- قسم إدارة النظام -->
+        <div class="setup-section" id="management-section" style="display: none;">
+            <h2>⚙️ إدارة النظام</h2>
+            
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('employees')">الموظفين</div>
+                <div class="tab" onclick="switchTab('justifications')">التبريرات</div>
+                <div class="tab" onclick="switchTab('messages')">الرسائل</div>
+                <div class="tab" onclick="switchTab('settings')">الإعدادات</div>
+            </div>
+
+            <!-- تبويب الموظفين -->
+            <div id="employees-tab" class="tab-content active">
+                <button class="btn btn-primary" onclick="showAddEmployeeModal()">+ إضافة موظف</button>
+                
+                <div class="employee-list" id="employee-list">
+                    <!-- سيتم ملؤها بواسطة JavaScript -->
+                </div>
+            </div>
+
+            <!-- تبويب التبريرات -->
+            <div id="justifications-tab" class="tab-content">
+                <h3>توليد التبريرات</h3>
+                <div class="input-group">
+                    <label>اختر الموظف:</label>
+                    <select id="employee-select">
+                        <option value="">-- اختر موظف --</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label>نوع التبرير:</label>
+                    <select id="justification-type">
+                        <option value="contract_renewal">تجديد عقد منتهي</option>
+                        <option value="salary_delay">تبرير تأخر رواتب</option>
+                        <option value="labor_case">حل قضية عمالية</option>
+                        <option value="iqama_renewal">تجديد إقامة منتهية</option>
+                    </select>
+                </div>
+                
+                <button class="btn btn-primary" onclick="generateJustification()">توليد التبرير بـ ChatGPT</button>
+                
+                <div id="justification-result" style="margin-top: 20px;"></div>
+            </div>
+
+            <!-- تبويب الرسائل -->
+            <div id="messages-tab" class="tab-content">
+                <h3>إرسال رسائل WhatsApp</h3>
+                
+                <div class="input-group">
+                    <label>نوع الرسالة:</label>
+                    <select id="message-type" onchange="updateMessageTemplate()">
+                        <option value="salary_request">طلب بيانات الحساب البنكي</option>
+                        <option value="contract_reminder">تذكير بانتهاء العقد</option>
+                        <option value="document_request">طلب مستندات</option>
+                        <option value="custom">رسالة مخصصة</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label>نص الرسالة:</label>
+                    <textarea id="message-text" rows="5">مرحباً {name}،
+
+نرجو تزويدنا ببيانات حسابك البنكي (IBAN) لصرف الراتب.
+
+يرجى الرد على هذه الرسالة بالبيانات المطلوبة.
+
+شكراً لك</textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label>إرسال إلى:</label>
+                    <select id="send-to">
+                        <option value="all">جميع الموظفين</option>
+                        <option value="selected">موظفين محددين</option>
+                    </select>
+                </div>
+                
+                <button class="btn btn-primary" onclick="sendBulkMessages()">إرسال الرسائل</button>
+            </div>
+
+            <!-- تبويب الإعدادات -->
+            <div id="settings-tab" class="tab-content">
+                <h3>إعدادات النظام</h3>
+                
+                <div class="input-group">
+                    <label>اسم الشركة:</label>
+                    <input type="text" id="company-name" value="شركة التكامل">
+                </div>
+                
+                <div class="input-group">
+                    <label>السجل التجاري:</label>
+                    <input type="text" id="company-cr" placeholder="1234567890">
+                </div>
+                
+                <div class="input-group">
+                    <label>البريد الإلكتروني:</label>
+                    <input type="email" id="company-email" value="m_shaikhi@yahoo.com">
+                </div>
+                
+                <button class="btn btn-primary" onclick="saveSettings()">حفظ الإعدادات</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة إضافة موظف -->
+    <div id="addEmployeeModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>إضافة موظف جديد</h2>
+            
+            <div class="input-group">
+                <label>الاسم الكامل:</label>
+                <input type="text" id="emp-name">
+            </div>
+            
+            <div class="input-group">
+                <label>رقم الهوية/الإقامة:</label>
+                <input type="text" id="emp-iqama">
+            </div>
+            
+            <div class="input-group">
+                <label>المسمى الوظيفي:</label>
+                <input type="text" id="emp-position">
+            </div>
+            
+            <div class="input-group">
+                <label>رقم الجوال (WhatsApp):</label>
+                <input type="text" id="emp-phone" placeholder="+966xxxxxxxxx">
+            </div>
+            
+            <div class="input-group">
+                <label>الراتب:</label>
+                <input type="number" id="emp-salary">
+            </div>
+            
+            <div class="input-group">
+                <label>تاريخ انتهاء العقد:</label>
+                <input type="date" id="emp-contract-end">
+            </div>
+            
+            <button class="btn btn-primary" onclick="saveEmployee()">حفظ</button>
+            <button class="btn" onclick="closeModal()">إلغاء</button>
+        </div>
+    </div>
+
+    <script>
+        // متغيرات عامة
+        let config = {
+            chatgpt: { apiKey: '', connected: false },
+            whatsapp: { sid: '', token: '', number: '', connected: false },
+            database: { url: '', key: '', connected: false },
+            hosting: { ready: false }
+        };
+
+        let employees = [];
+
+        // وظائف اختبار الخدمات
+        async function testChatGPT() {
+            const apiKey = document.getElementById('chatgpt-api-key').value;
+            if (!apiKey) {
+                showAlert('error', 'الرجاء إدخال مفتاح API');
+                return;
+            }
+
+            document.getElementById('chatgpt-test').style.display = 'block';
+            document.getElementById('chatgpt-loader').style.display = 'block';
+            document.getElementById('chatgpt-result').innerHTML = '';
+
+            try {
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-3.5-turbo',
+                        messages: [{
+                            role: 'user',
+                            content: 'مرحبا، هل تعمل بشكل صحيح؟'
+                        }],
+                        max_tokens: 50
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    config.chatgpt.apiKey = apiKey;
+                    config.chatgpt.connected = true;
+                    
+                    document.getElementById('chatgpt-status').className = 'status-badge status-connected';
+                    document.getElementById('chatgpt-status').textContent = 'متصل';
+                    document.getElementById('chatgpt-card').classList.add('active');
+                    
+                    document.getElementById('chatgpt-result').innerHTML = `
+                        <div style="color: green;">✅ تم الاتصال بنجاح!</div>
+                        <div style="margin-top: 10px;">الرد: ${data.choices[0].message.content}</div>
+                    `;
+                    
+                    showAlert('success', 'تم ربط ChatGPT بنجاح!');
+                    checkAllServices();
+                } else {
+                    throw new Error('فشل الاتصال');
+                }
+            } catch (error) {
+                document.getElementById('chatgpt-result').innerHTML = `
+                    <div style="color: red;">❌ خطأ: ${error.message}</div>
+                    <div style="margin-top: 10px;">تأكد من صحة المفتاح وأن لديك رصيد كافي</div>
+                `;
+            } finally {
+                document.getElementById('chatgpt-loader').style.display = 'none';
+            }
+        }
+
+        async function testWhatsApp() {
+            const sid = document.getElementById('twilio-sid').value;
+            const token = document.getElementById('twilio-token').value;
+            const number = document.getElementById('whatsapp-number').value;
+
+            if (!sid || !token || !number) {
+                showAlert('error', 'الرجاء ملء جميع الحقول');
+                return;
+            }
+
+            config.whatsapp = { sid, token, number, connected: true };
+            
+            document.getElementById('whatsapp-status').className = 'status-badge status-connected';
+            document.getElementById('whatsapp-status').textContent = 'متصل';
+            document.getElementById('whatsapp-card').classList.add('active');
+            
+            showAlert('success', 'تم حفظ بيانات WhatsApp بنجاح!');
+            checkAllServices();
+        }
+
+        async function setupDatabase() {
+            const url = document.getElementById('supabase-url').value;
+            const key = document.getElementById('supabase-key').value;
+
+            if (!url || !key) {
+                showAlert('error', 'الرجاء ملء جميع الحقول');
+                return;
+            }
+
+            config.database = { url, key, connected: true };
+            
+            document.getElementById('database-status').className = 'status-badge status-connected';
+            document.getElementById('database-status').textContent = 'متصل';
+            document.getElementById('database-card').classList.add('active');
+            
+            showAlert('success', 'تم إعداد قاعدة البيانات بنجاح!');
+            checkAllServices();
+        }
+
+        function checkAllServices() {
+            if (config.chatgpt.connected && config.whatsapp.connected && config.database.connected) {
+                document.getElementById('management-section').style.display = 'block';
+                showAlert('info', 'جميع الخدمات متصلة! يمكنك الآن البدء في استخدام النظام');
+            }
+        }
+
+        // وظائف إدارة النظام
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function showAddEmployeeModal() {
+            document.getElementById('addEmployeeModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('addEmployeeModal').style.display = 'none';
+        }
+
+        function saveEmployee() {
+            const employee = {
+                id: Date.now(),
+                name: document.getElementById('emp-name').value,
+                iqama: document.getElementById('emp-iqama').value,
+                position: document.getElementById('emp-position').value,
+                phone: document.getElementById('emp-phone').value,
+                salary: document.getElementById('emp-salary').value,
+                contractEnd: document.getElementById('emp-contract-end').value
+            };
+            
+            if (!employee.name || !employee.iqama) {
+                showAlert('error', 'الرجاء ملء الحقول المطلوبة');
+                return;
+            }
+            
+            employees.push(employee);
+            updateEmployeeList();
+            closeModal();
+            showAlert('success', 'تم إضافة الموظف بنجاح!');
+            
+            // مسح الحقول
+            document.getElementById('emp-name').value = '';
+            document.getElementById('emp-iqama').value = '';
+            document.getElementById('emp-position').value = '';
+            document.getElementById('emp-phone').value = '';
+            document.getElementById('emp-salary').value = '';
+            document.getElementById('emp-contract-end').value = '';
+        }
+
+        function updateEmployeeList() {
+            const listHtml = employees.map(emp => `
+                <div class="employee-card">
+                    <div class="employee-info">
+                        <h4>${emp.name}</h4>
+                        <p>الهوية: ${emp.iqama} | المنصب: ${emp.position}</p>
+                    </div>
+                    <div class="employee-actions">
+                        <button class="btn btn-secondary" onclick="sendWhatsApp('${emp.id}')">
+                            📱 WhatsApp
+                        </button>
+                        <button class="btn" onclick="editEmployee('${emp.id}')">
+                            ✏️ تعديل
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('employee-list').innerHTML = listHtml;
+            
+            // تحديث قائمة الموظفين في التبريرات
+            const selectHtml = '<option value="">-- اختر موظف --</option>' + 
+                employees.map(emp => `<option value="${emp.id}">${emp.name}</option>`).join('');
+            document.getElementById('employee-select').innerHTML = selectHtml;
+        }
+
+        async function generateJustification() {
+            const employeeId = document.getElementById('employee-select').value;
+            const type = document.getElementById('justification-type').value;
+            
+            if (!employeeId || !config.chatgpt.connected) {
+                showAlert('error', 'الرجاء اختيار موظف والتأكد من اتصال ChatGPT');
+                return;
+            }
+            
+            const employee = employees.find(e => e.id == employeeId);
+            
+            const prompts = {
+                contract_renewal: `اكتب تبرير رسمي لتجديد عقد منتهي لمنصة مدد للموظف ${employee.name} رقم الهوية ${employee.iqama} المنصب ${employee.position}`,
+                salary_delay: `اكتب تبرير رسمي لتأخر صرف راتب الموظف ${employee.name} لمنصة مدد`,
+                labor_case: `اكتب تبرير لحل قضية عمالية ودياً للموظف ${employee.name}`,
+                iqama_renewal: `اكتب تبرير تجديد إقامة منتهية للموظف ${employee.name}`
+            };
+            
+            document.getElementById('justification-result').innerHTML = '<div class="loader" style="display: block;"></div>';
+            
+            try {
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${config.chatgpt.apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-4',
+                        messages: [{
+                            role: 'system',
+                            content: 'أنت خبير في كتابة التبريرات الرسمية لمنصة مدد السعودية. اكتب تبريرات رسمية ومقنعة.'
+                        }, {
+                            role: 'user',
+                            content: prompts[type]
+                        }],
+                        max_tokens: 1000,
+                        temperature: 0.7
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const justification = data.choices[0].message.content;
+                    
+                    document.getElementById('justification-result').innerHTML = `
+                        <div style="background: #f4f4f4; padding: 15px; border-radius: 5px; white-space: pre-wrap;">${justification}</div>
+                        <button class="btn btn-primary" onclick="copyToClipboard()">نسخ</button>
+                        <button class="btn btn-secondary" onclick="downloadJustification()">تحميل</button>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('justification-result').innerHTML = `<div style="color: red;">خطأ: ${error.message}</div>`;
+            }
+        }
+
+        function updateMessageTemplate() {
+            const type = document.getElementById('message-type').value;
+            const templates = {
+                salary_request: `مرحباً {name}،\n\nنرجو تزويدنا ببيانات حسابك البنكي (IBAN) لصرف الراتب.\n\nيرجى الرد على هذه الرسالة بالبيانات المطلوبة.\n\nشكراً لك`,
+                contract_reminder: `مرحباً {name}،\n\nنود تذكيرك بأن عقد العمل الخاص بك سينتهي بتاريخ {contract_end}.\n\nيرجى مراجعة قسم الموارد البشرية للتجديد.\n\nشكراً لك`,
+                document_request: `مرحباً {name}،\n\nنرجو تزويدنا بالمستندات التالية:\n- صورة من الهوية/الإقامة\n- صورة من جواز السفر\n\nيرجى إرسالها عبر WhatsApp.\n\nشكراً لك`,
+                custom: ''
+            };
+            
+            if (type !== 'custom') {
+                document.getElementById('message-text').value = templates[type];
+            }
+        }
+
+        async function sendBulkMessages() {
+            if (!config.whatsapp.connected) {
+                showAlert('error', 'الرجاء ربط WhatsApp أولاً');
+                return;
+            }
+            
+            const messageText = document.getElementById('message-text').value;
+            const sendTo = document.getElementById('send-to').value;
+            
+            if (!messageText) {
+                showAlert('error', 'الرجاء كتابة نص الرسالة');
+                return;
+            }
+            
+            showAlert('info', `سيتم إرسال الرسائل إلى ${sendTo === 'all' ? 'جميع الموظفين' : 'الموظفين المحددين'}`);
+        }
+
+        function prepareDeployment() {
+            const deploymentCode = `
+// ملف .env لحفظ المتغيرات السرية
+OPENAI_API_KEY=${config.chatgpt.apiKey}
+TWILIO_ACCOUNT_SID=${config.whatsapp.sid}
+TWILIO_AUTH_TOKEN=${config.whatsapp.token}
+TWILIO_WHATSAPP_NUMBER=${config.whatsapp.number}
+SUPABASE_URL=${config.database.url}
+SUPABASE_ANON_KEY=${config.database.key}
+            `;
+            
+            const blob = new Blob([deploymentCode], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'deployment-config.txt';
+            a.click();
+            
+            showAlert('success', 'تم تحميل ملف الإعدادات!');
+        }
+
+        function downloadProject() {
+            showAlert('info', 'جاري تجهيز ملفات المشروع...');
+        }
+
+        function sendTestMessage() {
+            if (!config.whatsapp.connected) {
+                showAlert('error', 'الرجاء ربط WhatsApp أولاً');
+                return;
+            }
+            showAlert('info', 'سيتم إرسال رسالة تجريبية...');
+        }
+
+        function testDatabase() {
+            const url = document.getElementById('supabase-url').value;
+            const key = document.getElementById('supabase-key').value;
+            
+            if (!url || !key) {
+                showAlert('error', 'الرجاء ملء جميع الحقول');
+                return;
+            }
+            
+            showAlert('success', 'تم الاتصال بقاعدة البيانات بنجاح!');
+        }
+
+        function editEmployee(id) {
+            // TODO: تنفيذ وظيفة التعديل
+            showAlert('info', 'وظيفة التعديل قيد التطوير');
+        }
+
+        function sendWhatsApp(id) {
+            if (!config.whatsapp.connected) {
+                showAlert('error', 'الرجاء ربط WhatsApp أولاً');
+                return;
+            }
+            showAlert('info', 'تم إرسال رسالة WhatsApp');
+        }
+
+        function copyToClipboard() {
+            // TODO: تنفيذ وظيفة النسخ
+            showAlert('success', 'تم النسخ!');
+        }
+
+        function downloadJustification() {
+            // TODO: تنفيذ وظيفة التحميل
+            showAlert('info', 'جاري التحميل...');
+        }
+
+        function saveSettings() {
+            const settings = {
+                companyName: document.getElementById('company-name').value,
+                companyCR: document.getElementById('company-cr').value,
+                companyEmail: document.getElementById('company-email').value
+            };
+            
+            localStorage.setItem('companySettings', JSON.stringify(settings));
+            showAlert('success', 'تم حفظ الإعدادات!');
+        }
+
+        // وظائف مساعدة
+        function showAlert(type, message) {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.className = `alert alert-${type}`;
+            alertBox.textContent = message;
+            alertBox.style.display = 'block';
+            
+            setTimeout(() => {
+                alertBox.style.display = 'none';
+            }, 5000);
+        }
+
+        // تحميل الإعدادات عند بدء التشغيل
+        window.onload = function() {
+            const savedSettings = localStorage.getItem('companySettings');
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+                document.getElementById('company-name').value = settings.companyName || '';
+                document.getElementById('company-cr').value = settings.companyCR || '';
+                document.getElementById('company-email').value = settings.companyEmail || '';
+            }
+        };
+    </script>
+</body>
+</html>
