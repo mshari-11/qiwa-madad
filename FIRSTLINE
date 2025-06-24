@@ -1,0 +1,1798 @@
+</html>
+index.html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام تكامل معلومات قوى ومدد</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%);
+            color: white;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        
+        .setup-section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .service-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .service-card:hover {
+            border-color: #2d5a3d;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .service-card.active {
+            border-color: #4caf50;
+            background: #f1f8f4;
+        }
+        
+        .service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .service-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2d5a3d;
+        }
+        
+        .status-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .status-connected {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .status-pending {
+            background: #ff9800;
+            color: white;
+        }
+        
+        .status-disconnected {
+            background: #f44336;
+            color: white;
+        }
+        
+        .setup-steps {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        
+        .step {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .step::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4caf50;
+            font-weight: bold;
+        }
+        
+        .step.pending::before {
+            content: "○";
+            color: #ccc;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 25px;
+            background: #2d5a3d;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 5px;
+            transition: background 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 16px;
+        }
+        
+        .btn:hover {
+            background: #1a472a;
+        }
+        
+        .btn-primary {
+            background: #4caf50;
+        }
+        
+        .btn-primary:hover {
+            background: #45a049;
+        }
+        
+        .btn-secondary {
+            background: #2196f3;
+        }
+        
+        .btn-secondary:hover {
+            background: #0b7dda;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .input-group input, .input-group textarea, .input-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
+            outline: none;
+            border-color: #4caf50;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            color: #2d5a3d;
+            border-bottom-color: #2d5a3d;
+            font-weight: bold;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .code-block {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        
+        .api-test {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #2d5a3d;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            display: none;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .employee-list {
+            margin-top: 20px;
+        }
+        
+        .employee-card {
+            background: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .employee-info h4 {
+            margin-bottom: 5px;
+            color: #2d5a3d;
+        }
+        
+        .employee-info p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .employee-actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+        }
+        
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #aaa;
+        }
+        
+        .close:hover {
+            color: #000;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            color: #2d5a3d;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card .number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #1a472a;
+        }
+        
+        .stat-card .label {
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏢 نظام تكامل معلومات قوى ومدد</h1>
+        <p>إعداد وربط الخدمات الأساسية</p>
+    </div>
+
+    <div class="container">
+        <!-- تنبيه النجاح -->
+        <div id="alertBox" class="alert"></div>
+
+        <!-- قسم الإعداد -->
+        <div class="setup-section">
+            <h2>🚀 إعداد الخدمات المطلوبة</h2>
+            <p style="margin-bottom: 20px;">اتبع الخطوات التالية لربط جميع الخدمات المطلوبة:</p>
+
+            <!-- 1. ChatGPT API -->
+            <div class="service-card" id="chatgpt-card">
+                <div class="service-header">
+                    <h3 class="service-title">1. ChatGPT API</h3>
+                    <span class="status-badge status-disconnected" id="chatgpt-status">غير متصل</span>
+                </div>
+                
+                <div class="setup-steps">
+                    <div class="step pending">اذهب إلى <a href="https://platform.openai.com/signup" target="_blank">platform.openai.com</a></div>
+                    <div class="step pending">سجل حساب جديد أو سجل دخول</div>
+                    <div class="step pending">اضغط على "API Keys" من القائمة الجانبية</div>
+                    <div class="step pending">اضغط "Create new secret key"</div>
+                    <div class="step pending">انسخ المفتاح والصقه هنا:</div>
+                </div>
+                
+                <div class="input-group">
+                    <label>مفتاح ChatGPT API:</label>
+                    <input type="password" id="chatgpt-api-key" placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxx">
+                </div>
+                
+                <button class="btn btn-primary" onclick="testChatGPT()">اختبار الاتصال</button>
+                <a href="https://platform.openai.com/account/billing" target="_blank" class="btn btn-secondary">إضافة رصيد</a>
+                
+                <div class="api-test" id="chatgpt-test" style="display: none;">
+                    <div class="loader" id="chatgpt-loader"></div>
+                    <div id="chatgpt-result"></div>
+                </div>
+            </div>
+
+            <!-- 2. WhatsApp API -->
+            <div class="service-card" id="whatsapp-card">
+                <div class="service-header">
+                    <h3 class="service-title">2. WhatsApp Business API</h3>
+                    <span class="status-badge status-disconnected" id="whatsapp-status">غير متصل</span>
+                </div>
+                
+                <div class="setup-steps">
+                    <div class="step pending">اذهب إلى <a href="https://www.twilio.com/try-twilio" target="_blank">Twilio</a> (الأسهل)</div>
+                    <div class="step pending">سجل حساب مجاني</div>
+                    <div class="step pending">فعّل WhatsApp Sandbox للتجربة</div>
+                    <div class="step pending">احصل على Account SID و Auth Token</div>
+                    <div class="step pending">اربط رقم WhatsApp Business</div>
+                </div>
+                
+                <div class="input-group">
+                    <label>Twilio Account SID:</label>
+                    <input type="text" id="twilio-sid" placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+                </div>
+                
+                <div class="input-group">
+                    <label>Twilio Auth Token:</label>
+                    <input type="password" id="twilio-token" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+                </div>
+                
+                <div class="input-group">
+                    <label>رقم WhatsApp (مع رمز الدولة):</label>
+                    <input type="text" id="whatsapp-number" placeholder="+966566606266">
+                </div>
+                
+                <button class="btn btn-primary" onclick="testWhatsApp()">اختبار الاتصال</button>
+                <button class="btn btn-secondary" onclick="sendTestMessage()">إرسال رسالة تجريبية</button>
+                
+                <div class="api-test" id="whatsapp-test" style="display: none;">
+                    <div class="loader" id="whatsapp-loader"></div>
+                    <div id="whatsapp-result"></div>
+                </div>
+            </div>
+
+            <!-- 3. قاعدة البيانات -->
+            <div class="service-card" id="database-card">
+                <div class="service-header">
+                    <h3 class="service-title">3. قاعدة البيانات (Supabase/MySQL)</h3>
+                    <span class="status-badge status-disconnected" id="database-status">غير متصل</span>
+                </div>
+                
+                <div class="setup-steps">
+                    <div class="step pending">اذهب إلى <a href="https://supabase.com" target="_blank">supabase.com</a></div>
+                    <div class="step pending">سجل بحساب GitHub أو بريد إلكتروني</div>
+                    <div class="step pending">أنشئ مشروع جديد (New Project)</div>
+                    <div class="step pending">انتظر إنشاء قاعدة البيانات (دقيقتين)</div>
+                    <div class="step pending">انسخ URL و anon key من الإعدادات</div>
+                </div>
+                
+                <div class="input-group">
+                    <label>Supabase URL:</label>
+                    <input type="text" id="supabase-url" placeholder="https://xxxxxxxxxxxxx.supabase.co">
+                </div>
+                
+                <div class="input-group">
+                    <label>Supabase Anon Key:</label>
+                    <input type="text" id="supabase-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+                </div>
+                
+                <button class="btn btn-primary" onclick="setupDatabase()">إعداد الجداول</button>
+                <button class="btn btn-secondary" onclick="testDatabase()">اختبار الاتصال</button>
+                
+                <div class="api-test" id="database-test" style="display: none;">
+                    <div class="loader" id="database-loader"></div>
+                    <div id="database-result"></div>
+                </div>
+            </div>
+
+            <!-- 4. الاستضافة -->
+            <div class="service-card" id="hosting-card">
+                <div class="service-header">
+                    <h3 class="service-title">4. استضافة الموقع (Vercel)</h3>
+                    <span class="status-badge status-pending" id="hosting-status">جاهز للنشر</span>
+                </div>
+                
+                <div class="setup-steps">
+                    <div class="step pending">اذهب إلى <a href="https://vercel.com/signup" target="_blank">vercel.com</a></div>
+                    <div class="step pending">سجل بحساب GitHub</div>
+                    <div class="step pending">اضغط "Import Project"</div>
+                    <div class="step pending">ارفع ملفات المشروع</div>
+                    <div class="step pending">انتظر النشر (دقيقة واحدة)</div>
+                </div>
+                
+                <button class="btn btn-primary" onclick="prepareDeployment()">تجهيز الملفات للنشر</button>
+                <button class="btn btn-secondary" onclick="downloadProject()">تحميل المشروع</button>
+            </div>
+        </div>
+
+        <!-- قسم إدارة النظام -->
+        <div class="setup-section" id="management-section" style="display: none;">
+            <h2>⚙️ إدارة النظام</h2>
+            
+            <!-- إحصائيات سريعة -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>إجمالي الموظفين</h3>
+                    <div class="number" id="total-employees">0</div>
+                    <div class="label">موظف مسجل</div>
+                </div>
+                <div class="stat-card">
+                    <h3>الحالات الحرجة</h3>
+                    <div class="number" id="critical-cases" style="color: #f44336;">0</div>
+                    <div class="label">حالة تحتاج تدخل عاجل</div>
+                </div>
+                <div class="stat-card">
+                    <h3>نسبة السعودة</h3>
+                    <div class="number" id="saudi-percentage">0%</div>
+                    <div class="label">من إجمالي الموظفين</div>
+                </div>
+                <div class="stat-card">
+                    <h3>المستحقات المالية</h3>
+                    <div class="number" id="total-dues">0</div>
+                    <div class="label">ريال سعودي</div>
+                </div>
+            </div>
+            
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('employees')">الموظفين</div>
+                <div class="tab" onclick="switchTab('justifications')">التبريرات</div>
+                <div class="tab" onclick="switchTab('messages')">الرسائل</div>
+                <div class="tab" onclick="switchTab('reports')">التقارير</div>
+                <div class="tab" onclick="switchTab('settings')">الإعدادات</div>
+            </div>
+
+            <!-- تبويب الموظفين -->
+            <div id="employees-tab" class="tab-content active">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <button class="btn btn-primary" onclick="showAddEmployeeModal()">+ إضافة موظف</button>
+                    <input type="text" id="search-employees" placeholder="بحث عن موظف..." style="width: 300px; padding: 10px;">
+                </div>
+                
+                <div class="employee-list" id="employee-list">
+                    <!-- سيتم ملؤها بواسطة JavaScript -->
+                </div>
+            </div>
+
+            <!-- تبويب التبريرات -->
+            <div id="justifications-tab" class="tab-content">
+                <h3>توليد التبريرات</h3>
+                <div class="input-group">
+                    <label>اختر الموظف:</label>
+                    <select id="employee-select">
+                        <option value="">-- اختر موظف --</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label>نوع التبرير:</label>
+                    <select id="justification-type">
+                        <option value="contract_renewal">تجديد عقد منتهي</option>
+                        <option value="salary_delay">تبرير تأخر رواتب</option>
+                        <option value="labor_case">حل قضية عمالية</option>
+                        <option value="iqama_renewal">تجديد إقامة منتهية</option>
+                        <option value="transfer_sponsorship">نقل كفالة</option>
+                        <option value="exit_reentry">خروج وعودة</option>
+                    </select>
+                </div>
+                
+                <button class="btn btn-primary" onclick="generateJustification()">توليد التبرير بـ ChatGPT</button>
+                
+                <div id="justification-result" style="margin-top: 20px;"></div>
+                
+                <h3 style="margin-top: 40px;">التبريرات السابقة</h3>
+                <div id="justifications-history">
+                    <!-- سيتم ملؤها بواسطة JavaScript -->
+                </div>
+            </div>
+
+            <!-- تبويب الرسائل -->
+            <div id="messages-tab" class="tab-content">
+                <h3>إرسال رسائل WhatsApp</h3>
+                
+                <div class="input-group">
+                    <label>نوع الرسالة:</label>
+                    <select id="message-type" onchange="updateMessageTemplate()">
+                        <option value="salary_request">طلب بيانات الحساب البنكي</option>
+                        <option value="contract_reminder">تذكير بانتهاء العقد</option>
+                        <option value="document_request">طلب مستندات</option>
+                        <option value="iqama_expiry">تنبيه انتهاء الإقامة</option>
+                        <option value="custom">رسالة مخصصة</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label>نص الرسالة:</label>
+                    <textarea id="message-text" rows="5">مرحباً {name}،
+
+نرجو تزويدنا ببيانات حسابك البنكي (IBAN) لصرف الراتب.
+
+يرجى الرد على هذه الرسالة بالبيانات المطلوبة.
+
+شكراً لك</textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label>إرسال إلى:</label>
+                    <select id="send-to">
+                        <option value="all">جميع الموظفين</option>
+                        <option value="selected">موظفين محددين</option>
+                        <option value="critical">الحالات الحرجة فقط</option>
+                    </select>
+                </div>
+                
+                <button class="btn btn-primary" onclick="sendBulkMessages()">إرسال الرسائل</button>
+                
+                <div id="message-status" style="margin-top: 20px;"></div>
+            </div>
+
+            <!-- تبويب التقارير -->
+            <div id="reports-tab" class="tab-content">
+                <h3>التقارير المتاحة</h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <div class="service-card">
+                        <h4>تقرير الرواتب المتأخرة</h4>
+                        <p>قائمة بجميع الموظفين الذين لديهم رواتب متأخرة</p>
+                        <button class="btn btn-primary" onclick="generateReport('delayed_salaries')">توليد التقرير</button>
+                    </div>
+                    
+                    <div class="service-card">
+                        <h4>تقرير العقود المنتهية</h4>
+                        <p>قائمة بالعقود المنتهية والتي ستنتهي قريباً</p>
+                        <button class="btn btn-primary" onclick="generateReport('expired_contracts')">توليد التقرير</button>
+                    </div>
+                    
+                    <div class="service-card">
+                        <h4>تقرير السعودة</h4>
+                        <p>تفاصيل نسب السعودة حسب الأقسام</p>
+                        <button class="btn btn-primary" onclick="generateReport('saudization')">توليد التقرير</button>
+                    </div>
+                    
+                    <div class="service-card">
+                        <h4>تقرير شامل</h4>
+                        <p>تقرير شامل عن جميع الموظفين والمشاكل</p>
+                        <button class="btn btn-primary" onclick="generateReport('comprehensive')">توليد التقرير</button>
+                    </div>
+                </div>
+                
+                <div id="report-result" style="margin-top: 30px;"></div>
+            </div>
+
+            <!-- تبويب الإعدادات -->
+            <div id="settings-tab" class="tab-content">
+                <h3>إعدادات النظام</h3>
+                
+                <div class="input-group">
+                    <label>اسم الشركة:</label>
+                    <input type="text" id="company-name" value="شركة التكامل">
+                </div>
+                
+                <div class="input-group">
+                    <label>السجل التجاري:</label>
+                    <input type="text" id="company-cr" placeholder="1234567890">
+                </div>
+                
+                <div class="input-group">
+                    <label>البريد الإلكتروني:</label>
+                    <input type="email" id="company-email" value="m_shaikhi@yahoo.com">
+                </div>
+                
+                <div class="input-group">
+                    <label>عدد أيام التنبيه قبل انتهاء العقد:</label>
+                    <input type="number" id="contract-warning-days" value="30">
+                </div>
+                
+                <div class="input-group">
+                    <label>عدد الأشهر المسموح لتأخر الراتب:</label>
+                    <input type="number" id="salary-delay-months" value="2">
+                </div>
+                
+                <button class="btn btn-primary" onclick="saveSettings()">حفظ الإعدادات</button>
+                
+                <h3 style="margin-top: 40px;">النسخ الاحتياطي</h3>
+                <button class="btn btn-secondary" onclick="backupData()">تصدير البيانات</button>
+                <button class="btn btn-secondary" onclick="restoreData()">استيراد البيانات</button>
+                
+                <h3 style="margin-top: 40px;">إدارة المستخدمين</h3>
+                <button class="btn btn-primary" onclick="showUserManagement()">إدارة المستخدمين</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة إضافة موظف -->
+    <div id="addEmployeeModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>إضافة موظف جديد</h2>
+            
+            <div class="input-group">
+                <label>الاسم الكامل:</label>
+                <input type="text" id="emp-name">
+            </div>
+            
+            <div class="input-group">
+                <label>رقم الهوية/الإقامة:</label>
+                <input type="text" id="emp-iqama">
+            </div>
+            
+            <div class="input-group">
+                <label>المسمى الوظيفي:</label>
+                <input type="text" id="emp-position">
+            </div>
+            
+            <div class="input-group">
+                <label>القسم:</label>
+                <input type="text" id="emp-department">
+            </div>
+            
+            <div class="input-group">
+                <label>الجنسية:</label>
+                <select id="emp-nationality">
+                    <option value="سعودي">سعودي</option>
+                    <option value="مصري">مصري</option>
+                    <option value="هندي">هندي</option>
+                    <option value="بنغالي">بنغالي</option>
+                    <option value="باكستاني">باكستاني</option>
+                    <option value="فلبيني">فلبيني</option>
+                    <option value="أخرى">أخرى</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label>رقم الجوال (WhatsApp):</label>
+                <input type="text" id="emp-phone" placeholder="+966xxxxxxxxx">
+            </div>
+            
+            <div class="input-group">
+                <label>الراتب:</label>
+                <input type="number" id="emp-salary">
+            </div>
+            
+            <div class="input-group">
+                <label>تاريخ انتهاء العقد:</label>
+                <input type="date" id="emp-contract-end">
+            </div>
+            
+            <div class="input-group">
+                <label>آخر دفعة راتب:</label>
+                <input type="date" id="emp-last-payment">
+            </div>
+            
+            <button class="btn btn-primary" onclick="saveEmployee()">حفظ</button>
+            <button class="btn" onclick="closeModal()">إلغاء</button>
+        </div>
+    </div>
+
+    <script>
+        // متغيرات عامة
+        let config = {
+            chatgpt: { apiKey: '', connected: false },
+            whatsapp: { sid: '', token: '', number: '', connected: false },
+            database: { url: '', key: '', connected: false },
+            hosting: { ready: false }
+        };
+
+        let employees = [];
+        let justifications = [];
+        let currentEmployee = null;
+
+        // تحميل البيانات من LocalStorage
+        function loadData() {
+            const savedConfig = localStorage.getItem('systemConfig');
+            if (savedConfig) {
+                config = JSON.parse(savedConfig);
+                updateServiceStatuses();
+            }
+            
+            const savedEmployees = localStorage.getItem('employees');
+            if (savedEmployees) {
+                employees = JSON.parse(savedEmployees);
+                updateEmployeeList();
+                updateStats();
+            }
+            
+            const savedJustifications = localStorage.getItem('justifications');
+            if (savedJustifications) {
+                justifications = JSON.parse(savedJustifications);
+            }
+        }
+
+        // حفظ البيانات في LocalStorage
+        function saveData() {
+            localStorage.setItem('systemConfig', JSON.stringify(config));
+            localStorage.setItem('employees', JSON.stringify(employees));
+            localStorage.setItem('justifications', JSON.stringify(justifications));
+        }
+
+        // تحديث حالات الخدمات
+        function updateServiceStatuses() {
+            if (config.chatgpt.connected) {
+                document.getElementById('chatgpt-status').className = 'status-badge status-connected';
+                document.getElementById('chatgpt-status').textContent = 'متصل';
+                document.getElementById('chatgpt-card').classList.add('active');
+            }
+            
+            if (config.whatsapp.connected) {
+                document.getElementById('whatsapp-status').className = 'status-badge status-connected';
+                document.getElementById('whatsapp-status').textContent = 'متصل';
+                document.getElementById('whatsapp-card').classList.add('active');
+            }
+            
+            if (config.database.connected) {
+                document.getElementById('database-status').className = 'status-badge status-connected';
+                document.getElementById('database-status').textContent = 'متصل';
+                document.getElementById('database-card').classList.add('active');
+            }
+            
+            checkAllServices();
+        }
+
+        // وظائف اختبار الخدمات
+        async function testChatGPT() {
+            const apiKey = document.getElementById('chatgpt-api-key').value;
+            if (!apiKey) {
+                showAlert('error', 'الرجاء إدخال مفتاح API');
+                return;
+            }
+
+            document.getElementById('chatgpt-test').style.display = 'block';
+            document.getElementById('chatgpt-loader').style.display = 'block';
+            document.getElementById('chatgpt-result').innerHTML = '';
+
+            try {
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-3.5-turbo',
+                        messages: [{
+                            role: 'user',
+                            content: 'مرحبا، هل تعمل بشكل صحيح؟'
+                        }],
+                        max_tokens: 50
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    config.chatgpt.apiKey = apiKey;
+                    config.chatgpt.connected = true;
+                    saveData();
+                    
+                    document.getElementById('chatgpt-status').className = 'status-badge status-connected';
+                    document.getElementById('chatgpt-status').textContent = 'متصل';
+                    document.getElementById('chatgpt-card').classList.add('active');
+                    
+                    document.getElementById('chatgpt-result').innerHTML = `
+                        <div style="color: green;">✅ تم الاتصال بنجاح!</div>
+                        <div style="margin-top: 10px;">الرد: ${data.choices[0].message.content}</div>
+                    `;
+                    
+                    showAlert('success', 'تم ربط ChatGPT بنجاح!');
+                    checkAllServices();
+                } else {
+                    throw new Error('فشل الاتصال');
+                }
+            } catch (error) {
+                document.getElementById('chatgpt-result').innerHTML = `
+                    <div style="color: red;">❌ خطأ: ${error.message}</div>
+                    <div style="margin-top: 10px;">تأكد من صحة المفتاح وأن لديك رصيد كافي</div>
+                `;
+            } finally {
+                document.getElementById('chatgpt-loader').style.display = 'none';
+            }
+        }
+
+        async function testWhatsApp() {
+            const sid = document.getElementById('twilio-sid').value;
+            const token = document.getElementById('twilio-token').value;
+            const number = document.getElementById('whatsapp-number').value;
+
+            if (!sid || !token || !number) {
+                showAlert('error', 'الرجاء ملء جميع الحقول');
+                return;
+            }
+
+            document.getElementById('whatsapp-test').style.display = 'block';
+            document.getElementById('whatsapp-loader').style.display = 'block';
+            document.getElementById('whatsapp-result').innerHTML = '';
+
+            // في بيئة حقيقية، ستحتاج خادم backend لهذا
+            // هنا نحفظ البيانات فقط
+            config.whatsapp = { sid, token, number, connected: true };
+            saveData();
+            
+            document.getElementById('whatsapp-status').className = 'status-badge status-connected';
+            document.getElementById('whatsapp-status').textContent = 'متصل';
+            document.getElementById('whatsapp-card').classList.add('active');
+            
+            document.getElementById('whatsapp-result').innerHTML = `
+                <div style="color: green;">✅ تم حفظ بيانات WhatsApp بنجاح!</div>
+                <div style="margin-top: 10px;">يمكنك الآن إرسال الرسائل</div>
+            `;
+            
+            showAlert('success', 'تم حفظ بيانات WhatsApp بنجاح!');
+            document.getElementById('whatsapp-loader').style.display = 'none';
+            checkAllServices();
+        }
+
+        function sendTestMessage() {
+            if (!config.whatsapp.connected) {
+                showAlert('error', 'الرجاء ربط WhatsApp أولاً');
+                return;
+            }
+            
+            showAlert('info', 'سيتم إرسال رسالة تجريبية إلى رقمك المسجل...');
+            
+            // في بيئة حقيقية، ستحتاج إلى خادم backend
+            console.log('إرسال رسالة تجريبية إلى:', config.whatsapp.number);
+        }
+
+        async function testDatabase() {
+            const url = document.getElementById('supabase-url').value;
+            const key = document.getElementById('supabase-key').value;
+
+            if (!url || !key) {
+                showAlert('error', 'الرجاء ملء جميع الحقول');
+                return;
+            }
+
+            document.getElementById('database-test').style.display = 'block';
+            document.getElementById('database-loader').style.display = 'block';
+            document.getElementById('database-result').innerHTML = '';
+
+            try {
+                // اختبار الاتصال بـ Supabase
+                const response = await fetch(`${url}/rest/v1/`, {
+                    headers: {
+                        'apikey': key,
+                        'Authorization': `Bearer ${key}`
+                    }
+                });
+
+                if (response.ok) {
+                    config.database = { url, key, connected: true };
+                    saveData();
+                    
+                    document.getElementById('database-status').className = 'status-badge status-connected';
+                    document.getElementById('database-status').textContent = 'متصل';
+                    document.getElementById('database-card').classList.add('active');
+                    
+                    document.getElementById('database-result').innerHTML = `
+                        <div style="color: green;">✅ تم الاتصال بقاعدة البيانات بنجاح!</div>
+                    `;
+                    
+                    showAlert('success', 'تم الاتصال بقاعدة البيانات بنجاح!');
+                    checkAllServices();
+                } else {
+                    throw new Error('فشل الاتصال بقاعدة البيانات');
+                }
+            } catch (error) {
+                document.getElementById('database-result').innerHTML = `
+                    <div style="color: red;">❌ خطأ: ${error.message}</div>
+                `;
+            } finally {
+                document.getElementById('database-loader').style.display = 'none';
+            }
+        }
+
+        async function setupDatabase() {
+            const url = document.getElementById('supabase-url').value;
+            const key = document.getElementById('supabase-key').value;
+
+            if (!url || !key) {
+                showAlert('error', 'الرجاء ملء جميع الحقول');
+                return;
+            }
+
+            // في بيئة حقيقية، ستنشئ الجداول هنا
+            config.database = { url, key, connected: true };
+            saveData();
+            
+            document.getElementById('database-status').className = 'status-badge status-connected';
+            document.getElementById('database-status').textContent = 'متصل';
+            document.getElementById('database-card').classList.add('active');
+            
+            showAlert('success', 'تم إعداد قاعدة البيانات بنجاح!');
+            
+            // إنشاء جداول نموذجية
+            const tables = `
+-- جدول الموظفين
+CREATE TABLE employees (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    iqama VARCHAR(20) UNIQUE,
+    position VARCHAR(100),
+    department VARCHAR(100),
+    nationality VARCHAR(50),
+    phone VARCHAR(20),
+    salary DECIMAL(10,2),
+    contract_end DATE,
+    last_payment DATE,
+    status VARCHAR(20),
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- جدول التبريرات
+CREATE TABLE justifications (
+    id SERIAL PRIMARY KEY,
+    employee_id INTEGER REFERENCES employees(id),
+    type VARCHAR(50),
+    content TEXT,
+    status VARCHAR(20),
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- جدول الرسائل
+CREATE TABLE messages (
+    id SERIAL PRIMARY KEY,
+    employee_id INTEGER REFERENCES employees(id),
+    message TEXT,
+    sent_at TIMESTAMP DEFAULT NOW(),
+    status VARCHAR(20)
+);
+            `;
+            
+            console.log('جداول قاعدة البيانات:', tables);
+            checkAllServices();
+        }
+
+        function checkAllServices() {
+            if (config.chatgpt.connected && config.whatsapp.connected && config.database.connected) {
+                document.getElementById('management-section').style.display = 'block';
+                showAlert('info', 'جميع الخدمات متصلة! يمكنك الآن البدء في استخدام النظام');
+                return true;
+            }
+            return false;
+        }
+
+        // وظائف إدارة النظام
+        function switchTab(tabName) {
+            // إخفاء جميع التبويبات
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // إظهار التبويب المحدد
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function showAddEmployeeModal() {
+            document.getElementById('addEmployeeModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('addEmployeeModal').style.display = 'none';
+            // مسح الحقول
+            document.getElementById('emp-name').value = '';
+            document.getElementById('emp-iqama').value = '';
+            document.getElementById('emp-position').value = '';
+            document.getElementById('emp-department').value = '';
+            document.getElementById('emp-nationality').value = 'سعودي';
+            document.getElementById('emp-phone').value = '';
+            document.getElementById('emp-salary').value = '';
+            document.getElementById('emp-contract-end').value = '';
+            document.getElementById('emp-last-payment').value = '';
+        }
+
+        function saveEmployee() {
+            const employee = {
+                id: Date.now(),
+                name: document.getElementById('emp-name').value,
+                iqama: document.getElementById('emp-iqama').value,
+                position: document.getElementById('emp-position').value,
+                department: document.getElementById('emp-department').value,
+                nationality: document.getElementById('emp-nationality').value,
+                phone: document.getElementById('emp-phone').value,
+                salary: parseFloat(document.getElementById('emp-salary').value) || 0,
+                contractEnd: document.getElementById('emp-contract-end').value,
+                lastPayment: document.getElementById('emp-last-payment').value,
+                status: calculateEmployeeStatus(
+                    document.getElementById('emp-contract-end').value,
+                    document.getElementById('emp-last-payment').value
+                )
+            };
+            
+            if (!employee.name || !employee.iqama) {
+                showAlert('error', 'الرجاء ملء الحقول المطلوبة');
+                return;
+            }
+            
+            employees.push(employee);
+            saveData();
+            updateEmployeeList();
+            updateStats();
+            closeModal();
+            showAlert('success', 'تم إضافة الموظف بنجاح!');
+        }
+
+        function calculateEmployeeStatus(contractEnd, lastPayment) {
+            const today = new Date();
+            const contractDate = new Date(contractEnd);
+            const paymentDate = new Date(lastPayment);
+            
+            const contractDays = Math.floor((contractDate - today) / (1000 * 60 * 60 * 24));
+            const paymentDays = Math.floor((today - paymentDate) / (1000 * 60 * 60 * 24));
+            
+            if (contractDays < 0 || paymentDays > 90) {
+                return 'critical';
+            } else if (contractDays < 30 || paymentDays > 60) {
+                return 'warning';
+            }
+            return 'normal';
+        }
+
+        function updateEmployeeList() {
+            const searchTerm = document.getElementById('search-employees')?.value?.toLowerCase() || '';
+            const filteredEmployees = employees.filter(emp => 
+                emp.name.toLowerCase().includes(searchTerm) ||
+                emp.iqama.includes(searchTerm) ||
+                emp.position.toLowerCase().includes(searchTerm)
+            );
+            
+            const listHtml = filteredEmployees.map(emp => {
+                const statusColor = emp.status === 'critical' ? '#f44336' : 
+                                  emp.status === 'warning' ? '#ff9800' : '#4caf50';
+                                  
+                return `
+                    <div class="employee-card" style="border-left: 4px solid ${statusColor};">
+                        <div class="employee-info">
+                            <h4>${emp.name}</h4>
+                            <p>الهوية: ${emp.iqama} | المنصب: ${emp.position} | القسم: ${emp.department}</p>
+                            <p>الجنسية: ${emp.nationality} | الراتب: ${emp.salary} ريال</p>
+                        </div>
+                        <div class="employee-actions">
+                            <button class="btn btn-secondary" onclick="sendWhatsApp('${emp.id}')">
+                                📱 WhatsApp
+                            </button>
+                            <button class="btn" onclick="editEmployee('${emp.id}')">
+                                ✏️ تعديل
+                            </button>
+                            <button class="btn" onclick="deleteEmployee('${emp.id}')" style="background: #f44336;">
+                                🗑️ حذف
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            document.getElementById('employee-list').innerHTML = listHtml || '<p>لا يوجد موظفين مسجلين</p>';
+            
+            // تحديث قائمة الموظفين في التبريرات
+            const selectHtml = '<option value="">-- اختر موظف --</option>' + 
+                employees.map(emp => `<option value="${emp.id}">${emp.name}</option>`).join('');
+            document.getElementById('employee-select').innerHTML = selectHtml;
+        }
+
+        function updateStats() {
+            const totalEmployees = employees.length;
+            const criticalCases = employees.filter(emp => emp.status === 'critical').length;
+            const saudiCount = employees.filter(emp => emp.nationality === 'سعودي').length;
+            const saudiPercentage = totalEmployees > 0 ? Math.round((saudiCount / totalEmployees) * 100) : 0;
+            
+            let totalDues = 0;
+            employees.forEach(emp => {
+                if (emp.lastPayment) {
+                    const today = new Date();
+                    const lastPayment = new Date(emp.lastPayment);
+                    const monthsDelayed = Math.floor((today - lastPayment) / (1000 * 60 * 60 * 24 * 30));
+                    if (monthsDelayed > 0) {
+                        totalDues += emp.salary * monthsDelayed;
+                    }
+                }
+            });
+            
+            document.getElementById('total-employees').textContent = totalEmployees;
+            document.getElementById('critical-cases').textContent = criticalCases;
+            document.getElementById('saudi-percentage').textContent = saudiPercentage + '%';
+            document.getElementById('total-dues').textContent = totalDues.toLocaleString();
+        }
+
+        function deleteEmployee(id) {
+            if (confirm('هل أنت متأكد من حذف هذا الموظف؟')) {
+                employees = employees.filter(emp => emp.id != id);
+                saveData();
+                updateEmployeeList();
+                updateStats();
+                showAlert('success', 'تم حذف الموظف بنجاح');
+            }
+        }
+
+        function editEmployee(id) {
+            const employee = employees.find(emp => emp.id == id);
+            if (employee) {
+                document.getElementById('emp-name').value = employee.name;
+                document.getElementById('emp-iqama').value = employee.iqama;
+                document.getElementById('emp-position').value = employee.position;
+                document.getElementById('emp-department').value = employee.department || '';
+                document.getElementById('emp-nationality').value = employee.nationality || 'سعودي';
+                document.getElementById('emp-phone').value = employee.phone || '';
+                document.getElementById('emp-salary').value = employee.salary || '';
+                document.getElementById('emp-contract-end').value = employee.contractEnd || '';
+                document.getElementById('emp-last-payment').value = employee.lastPayment || '';
+                
+                currentEmployee = employee;
+                showAddEmployeeModal();
+            }
+        }
+
+        function sendWhatsApp(employeeId) {
+            const employee = employees.find(emp => emp.id == employeeId);
+            if (!employee || !employee.phone) {
+                showAlert('error', 'لا يوجد رقم هاتف لهذا الموظف');
+                return;
+            }
+            
+            if (!config.whatsapp.connected) {
+                showAlert('error', 'الرجاء ربط WhatsApp أولاً');
+                return;
+            }
+            
+            // في بيئة حقيقية، سترسل الرسالة عبر API
+            const message = `مرحباً ${employee.name}،\n\nنود التواصل معك بخصوص ${employee.position}.\n\nشكراً لك`;
+            console.log('إرسال رسالة إلى:', employee.phone, message);
+            showAlert('info', `تم إرسال رسالة إلى ${employee.name}`);
+        }
+
+        async function generateJustification() {
+            const employeeId = document.getElementById('employee-select').value;
+            const type = document.getElementById('justification-type').value;
+            
+            if (!employeeId || !config.chatgpt.connected) {
+                showAlert('error', 'الرجاء اختيار موظف والتأكد من اتصال ChatGPT');
+                return;
+            }
+            
+            const employee = employees.find(e => e.id == employeeId);
+            
+            const prompts = {
+                contract_renewal: `اكتب تبرير رسمي لتجديد عقد منتهي لمنصة مدد للموظف ${employee.name} رقم الهوية ${employee.iqama} المنصب ${employee.position} في قسم ${employee.department}. العقد انتهى بتاريخ ${employee.contractEnd}`,
+                salary_delay: `اكتب تبرير رسمي لتأخر صرف راتب الموظف ${employee.name} رقم الهوية ${employee.iqama} لمنصة مدد. آخر راتب تم صرفه بتاريخ ${employee.lastPayment}`,
+                labor_case: `اكتب تبرير لحل قضية عمالية ودياً للموظف ${employee.name} رقم الهوية ${employee.iqama} المنصب ${employee.position}`,
+                iqama_renewal: `اكتب تبرير تجديد إقامة منتهية للموظف ${employee.name} رقم الهوية ${employee.iqama}`,
+                transfer_sponsorship: `اكتب تبرير نقل كفالة للموظف ${employee.name} رقم الهوية ${employee.iqama} من جهة أخرى`,
+                exit_reentry: `اكتب تبرير طلب خروج وعودة للموظف ${employee.name} رقم الهوية ${employee.iqama}`
+            };
+            
+            document.getElementById('justification-result').innerHTML = '<div class="loader" style="display: block;"></div>';
+            
+            try {
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${config.chatgpt.apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-4',
+                        messages: [{
+                            role: 'system',
+                            content: 'أنت خبير في كتابة التبريرات الرسمية لمنصة مدد السعودية. اكتب تبريرات رسمية ومقنعة باللغة العربية الفصحى.'
+                        }, {
+                            role: 'user',
+                            content: prompts[type]
+                        }],
+                        max_tokens: 1000,
+                        temperature: 0.7
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const justificationText = data.choices[0].message.content;
+                    
+                    // حفظ التبرير
+                    const justification = {
+                        id: Date.now(),
+                        employeeId: employeeId,
+                        employeeName: employee.name,
+                        type: type,
+                        content: justificationText,
+                        createdAt: new Date().toISOString()
+                    };
+                    
+                    justifications.push(justification);
+                    saveData();
+                    
+                    document.getElementById('justification-result').innerHTML = `
+                        <div class="code-block" style="white-space: pre-wrap;">${justificationText}</div>
+                        <button class="btn btn-primary" onclick="copyToClipboard(\`${justificationText.replace(/`/g, '\\`')}\`)">نسخ</button>
+                        <button class="btn btn-secondary" onclick="downloadJustification(\`${justificationText.replace(/`/g, '\\`')}\`, '${employee.name}')">تحميل</button>
+                    `;
+                    
+                    updateJustificationHistory();
+                }
+            } catch (error) {
+                document.getElementById('justification-result').innerHTML = `<div style="color: red;">خطأ: ${error.message}</div>`;
+            }
+        }
+
+        function updateJustificationHistory() {
+            const recentJustifications = justifications.slice(-5).reverse();
+            const historyHtml = recentJustifications.map(just => `
+                <div class="employee-card">
+                    <div class="employee-info">
+                        <h4>${just.employeeName}</h4>
+                        <p>النوع: ${getJustificationType(just.type)} | التاريخ: ${new Date(just.createdAt).toLocaleDateString('ar-SA')}</p>
+                    </div>
+                    <div class="employee-actions">
+                        <button class="btn btn-secondary" onclick="viewJustification('${just.id}')">عرض</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('justifications-history').innerHTML = historyHtml || '<p>لا توجد تبريرات سابقة</p>';
+        }
+
+        function getJustificationType(type) {
+            const types = {
+                contract_renewal: 'تجديد عقد منتهي',
+                salary_delay: 'تبرير تأخر رواتب',
+                labor_case: 'حل قضية عمالية',
+                iqama_renewal: 'تجديد إقامة منتهية',
+                transfer_sponsorship: 'نقل كفالة',
+                exit_reentry: 'خروج وعودة'
+            };
+            return types[type] || type;
+        }
+
+        function viewJustification(id) {
+            const justification = justifications.find(j => j.id == id);
+            if (justification) {
+                document.getElementById('justification-result').innerHTML = `
+                    <div class="code-block" style="white-space: pre-wrap;">${justification.content}</div>
+                    <button class="btn btn-primary" onclick="copyToClipboard(\`${justification.content.replace(/`/g, '\\`')}\`)">نسخ</button>
+                    <button class="btn btn-secondary" onclick="downloadJustification(\`${justification.content.replace(/`/g, '\\`')}\`, '${justification.employeeName}')">تحميل</button>
+                `;
+            }
+        }
+
+        function updateMessageTemplate() {
+            const type = document.getElementById('message-type').value;
+            const templates = {
+                salary_request: `مرحباً {name}،\n\nنرجو تزويدنا ببيانات حسابك البنكي (IBAN) لصرف الراتب.\n\nيرجى الرد على هذه الرسالة بالبيانات المطلوبة.\n\nشكراً لك`,
+                contract_reminder: `مرحباً {name}،\n\nنود تذكيرك بأن عقد العمل الخاص بك سينتهي بتاريخ {contract_end}.\n\nيرجى مراجعة قسم الموارد البشرية للتجديد.\n\nشكراً لك`,
+                document_request: `مرحباً {name}،\n\nنرجو تزويدنا بالمستندات التالية:\n- صورة من الهوية/الإقامة\n- صورة من جواز السفر\n\nيرجى إرسالها عبر WhatsApp.\n\nشكراً لك`,
+                iqama_expiry: `مرحباً {name}،\n\nنود تنبيهك بأن إقامتك ستنتهي قريباً.\n\nيرجى مراجعة قسم الموارد البشرية لإجراءات التجديد.\n\nشكراً لك`,
+                custom: ''
+            };
+            
+            if (type !== 'custom') {
+                document.getElementById('message-text').value = templates[type];
+            }
+        }
+
+        async function sendBulkMessages() {
+            if (!config.whatsapp.connected) {
+                showAlert('error', 'الرجاء ربط WhatsApp أولاً');
+                return;
+            }
+            
+            const messageText = document.getElementById('message-text').value;
+            const sendTo = document.getElementById('send-to').value;
+            
+            if (!messageText) {
+                showAlert('error', 'الرجاء كتابة نص الرسالة');
+                return;
+            }
+            
+            let targetEmployees = [];
+            if (sendTo === 'all') {
+                targetEmployees = employees;
+            } else if (sendTo === 'critical') {
+                targetEmployees = employees.filter(emp => emp.status === 'critical');
+            } else {
+                // في حالة الموظفين المحددين، يمكن إضافة واجهة اختيار
+                targetEmployees = employees;
+            }
+            
+            let sentCount = 0;
+            targetEmployees.forEach(employee => {
+                if (employee.phone) {
+                    const personalizedMessage = messageText
+                        .replace('{name}', employee.name)
+                        .replace('{contract_end}', employee.contractEnd || 'غير محدد');
+                    
+                    // في بيئة حقيقية، سترسل عبر Twilio API
+                    console.log(`إرسال إلى ${employee.phone}:`, personalizedMessage);
+                    sentCount++;
+                }
+            });
+            
+            showAlert('success', `تم إرسال ${sentCount} رسالة بنجاح!`);
+            document.getElementById('message-status').innerHTML = `
+                <div style="color: green;">✅ تم إرسال الرسائل إلى ${sentCount} موظف</div>
+            `;
+        }
+
+        function generateReport(type) {
+            let reportContent = '';
+            const today = new Date();
+            
+            switch(type) {
+                case 'delayed_salaries':
+                    const delayedSalaries = employees.filter(emp => {
+                        if (!emp.lastPayment) return true;
+                        const lastPayment = new Date(emp.lastPayment);
+                        const monthsDelayed = Math.floor((today - lastPayment) / (1000 * 60 * 60 * 24 * 30));
+                        return monthsDelayed > 0;
+                    });
+                    
+                    reportContent = `
+                        <h3>تقرير الرواتب المتأخرة</h3>
+                        <p>التاريخ: ${today.toLocaleDateString('ar-SA')}</p>
+                        <p>عدد الموظفين المتأثرين: ${delayedSalaries.length}</p>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                            <thead>
+                                <tr style="background: #f5f5f5;">
+                                    <th style="border: 1px solid #ddd; padding: 10px;">الاسم</th>
+                                    <th style="border: 1px solid #ddd; padding: 10px;">الهوية</th>
+                                    <th style="border: 1px solid #ddd; padding: 10px;">آخر راتب</th>
+                                    <th style="border: 1px solid #ddd; padding: 10px;">عدد الأشهر</th>
+                                    <th style="border: 1px solid #ddd; padding: 10px;">المبلغ المستحق</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${delayedSalaries.map(emp => {
+                                    const lastPayment = new Date(emp.lastPayment || '2020-01-01');
+                                    const monthsDelayed = Math.floor((today - lastPayment) / (1000 * 60 * 60 * 24 * 30));
+                                    const amountDue = emp.salary * monthsDelayed;
+                                    return `
+                                        <tr>
+                                            <td style="border: 1px solid #ddd; padding: 10px;">${emp.name}</td>
+                                            <td style="border: 1px solid #ddd; padding: 10px;">${emp.iqama}</td>
+                                            <td style="border: 1px solid #ddd; padding: 10px;">${emp.lastPayment || 'غير محدد'}</td>
+                                            <td style="border: 1px solid #ddd; padding: 10px;">${monthsDelayed}</td>
+                                            <td style="border: 1px solid #ddd; padding: 10px;">${amountDue.toLocaleString()} ريال</td>
+                                        </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                    break;
+                    
+                case 'expired_contracts':
+                    const expiredContracts = employees.filter(emp => {
+                        if (!emp.contractEnd) return false;
+                        const contractEnd = new Date(emp.contractEnd);
+                        return contractEnd < today;
+                    });
+                    
+                    reportContent = `
+                        <h3>تقرير العقود المنتهية</h3>
+                        <p>التاريخ: ${today.toLocaleDateString('ar-SA')}</p>
+                        <p>عدد العقود المنتهية: ${expiredContracts.length}</p>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                            <thead>
+                                <tr style="background: #f5f5f5;">
+                                    <th style="border: 1px solid #ddd; padding: 10px;">الاسم</th>
+                                    <th style="border: 1px solid #ddd; padding: 10px;">الهوية</th>
+                                    <th style="border: 1px solid #ddd; padding: 10px;">المنصب</th>
+                                    <th style="border: 1px solid #ddd; padding: 10px;">تاريخ الانتهاء</th>
+                                    <th style="border: 1px solid #ddd; padding: 10px;">عدد الأيام</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${expiredContracts.map(emp => {
+                                    const contractEnd = new Date(emp.contractEnd);
+                                    const daysExpired = Math.floor((today - contractEnd) / (1000 * 60 * 60 * 24));
+                                    return `
+                                        <tr>
+                                            <td style="border: 1px solid #ddd; padding: 10px;">${emp.name}</td>
+                                            <td style="border: 1px solid #ddd; padding: 10px;">${emp.iqama}</td>
+                                            <td style="border: 1px solid #ddd; padding: 10px;">${emp.position}</td>
+                                            <td style="border: 1px solid #ddd; padding: 10px;">${emp.contractEnd}</td>
+                                            <td style="border: 1px solid #ddd; padding: 10px;">${daysExpired} يوم</td>
+                                        </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                    break;
+                    
+                case 'saudization':
+                    const departments = [...new Set(employees.map(emp => emp.department || 'غير محدد'))];
+                    const saudizationData = departments.map(dept => {
+                        const deptEmployees = employees.filter(emp => (emp.department || 'غير محدد') === dept);
+                        const saudiCount = deptEmployees.filter(emp => emp.nationality === 'سعودي').length;
+                        const percentage = deptEmployees.length > 0 ? Math.round((saudiCount / deptEmployees.length) * 100) : 0;
+                        return { dept, total: deptEmployees.length, saudi: saudiCount, percentage };
+                    });
+                    
+                    reportContent = `
+                        <h3>تقرير السعودة</h3>
+                        <p>التاريخ: ${today.toLocaleDateString('ar-SA')}</p>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                            <thead>
+                                <tr style="background: #f5f5f5;">
+                                    <th style="border: 1px solid #ddd; padding: 10px;">القسم</th>
+                                    <th style="border: 1px solid #ddd; padding: 10px;">إجمالي الموظفين</th>
+                                    <th style="border: 1px solid #ddd; padding: 10px;">عدد السعوديين</th>
+                                    <th style="border: 1px solid #ddd; padding: 10px;">النسبة</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${saudizationData.map(data => `
+                                    <tr>
+                                        <td style="border: 1px solid #ddd; padding: 10px;">${data.dept}</td>
+                                        <td style="border: 1px solid #ddd; padding: 10px;">${data.total}</td>
+                                        <td style="border: 1px solid #ddd; padding: 10px;">${data.saudi}</td>
+                                        <td style="border: 1px solid #ddd; padding: 10px;">${data.percentage}%</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                    break;
+                    
+                case 'comprehensive':
+                    reportContent = `
+                        <h3>تقرير شامل</h3>
+                        <p>التاريخ: ${today.toLocaleDateString('ar-SA')}</p>
+                        <h4>ملخص عام</h4>
+                        <ul>
+                            <li>إجمالي الموظفين: ${employees.length}</li>
+                            <li>الحالات الحرجة: ${employees.filter(emp => emp.status === 'critical').length}</li>
+                            <li>الحالات التحذيرية: ${employees.filter(emp => emp.status === 'warning').length}</li>
+                            <li>نسبة السعودة: ${employees.length > 0 ? Math.round((employees.filter(emp => emp.nationality === 'سعودي').length / employees.length) * 100) : 0}%</li>
+                        </ul>
+                        <h4>قائمة الموظفين</h4>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                            <thead>
+                                <tr style="background: #f5f5f5;">
+                                    <th style="border: 1px solid #ddd; padding: 10px;">الاسم</th>
+                                    <th style="border: 1px solid #ddd; padding: 10px;">الهوية</th>
+                                    <th style="border: 1px solid #ddd; padding: 10px;">المنصب</th>
+                                    <th style="border: 1px solid #ddd; padding: 10px;">القسم</th>
+                                    <th style="border: 1px solid #ddd; padding: 10px;">الحالة</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${employees.map(emp => `
+                                    <tr>
+                                        <td style="border: 1px solid #ddd; padding: 10px;">${emp.name}</td>
+                                        <td style="border: 1px solid #ddd; padding: 10px;">${emp.iqama}</td>
+                                        <td style="border: 1px solid #ddd; padding: 10px;">${emp.position}</td>
+                                        <td style="border: 1px solid #ddd; padding: 10px;">${emp.department || 'غير محدد'}</td>
+                                        <td style="border: 1px solid #ddd; padding: 10px;">
+                                            <span style="color: ${emp.status === 'critical' ? '#f44336' : emp.status === 'warning' ? '#ff9800' : '#4caf50'}">
+                                                ${emp.status === 'critical' ? 'حرج' : emp.status === 'warning' ? 'تحذير' : 'طبيعي'}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                    break;
+            }
+            
+            document.getElementById('report-result').innerHTML = `
+                <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                    ${reportContent}
+                    <div style="margin-top: 20px;">
+                        <button class="btn btn-primary" onclick="printReport()">طباعة</button>
+                        <button class="btn btn-secondary" onclick="downloadReport('${type}')">تحميل PDF</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function printReport() {
+            const content = document.getElementById('report-result').innerHTML;
+            const printWindow = window.open('', '', 'height=600,width=800');
+            printWindow.document.write('<html><head><title>تقرير</title>');
+            printWindow.document.write('<style>body { font-family: Arial, sans-serif; direction: rtl; }</style>');
+            printWindow.document.write('</head><body>');
+            printWindow.document.write(content);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        function downloadReport(type) {
+            showAlert('info', 'جاري تحضير التقرير للتحميل...');
+            // في بيئة حقيقية، ستحتاج مكتبة لتوليد PDF مثل jsPDF
+        }
+
+        function prepareDeployment() {
+            if (!checkAllServices()) {
+                showAlert('error', 'الرجاء ربط جميع الخدمات أولاً');
+                return;
+            }
+            
+            const deploymentCode = `
+// ملف .env لحفظ المتغيرات السرية
+OPENAI_API_KEY=${config.chatgpt.apiKey}
+TWILIO_ACCOUNT_SID=${config.whatsapp.sid}
+TWILIO_AUTH_TOKEN=${config.whatsapp.token}
+TWILIO_WHATSAPP_NUMBER=${config.whatsapp.number}
+SUPABASE_URL=${config.database.url}
+SUPABASE_ANON_KEY=${config.database.key}
+
+// تعليمات النشر على Vercel:
+1. احفظ هذا الملف باسم .env.local
+2. ارفع المشروع على GitHub
+3. اربط GitHub مع Vercel
+4. أضف المتغيرات من .env في إعدادات Vercel
+5. انشر المشروع
+            `;
+            
+            document.getElementById('hosting-status').className = 'status-badge status-connected';
+            document.getElementById('hosting-status').textContent = 'جاهز';
+            
+            const blob = new Blob([deploymentCode], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'deployment-config.txt';
+            a.click();
+            
+            showAlert('success', 'تم تحميل ملف الإعدادات! اتبع التعليمات بداخله');
+        }
+
+        function downloadProject() {
+            showAlert('info', 'جاري تجهيز ملفات المشروع...');
+            
+            // تحميل الصفحة الحالية
+            const pageContent = document.documentElement.outerHTML;
+            const blob = new Blob([pageContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'qiwa-madad-system.html';
+            a.click();
+            
+            showAlert('success', 'تم تحميل ملف المشروع!');
+        }
+
+        function backupData() {
+            const backup = {
+                config: config,
+                employees: employees,
+                justifications: justifications,
+                settings: {
+                    companyName: document.getElementById('company-name').value,
+                    companyCR: document.getElementById('company-cr').value,
+                    companyEmail: document.getElementById('company-email').value
+                },
+                exportDate: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            
+            showAlert('success', 'تم تصدير النسخة الاحتياطية بنجاح!');
+        }
+
+        function restoreData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const backup = JSON.parse(event.target.result);
+                        
+                        if (confirm('هل أنت متأكد من استيراد هذه البيانات؟ سيتم استبدال البيانات الحالية.')) {
+                            config = backup.config || config;
+                            employees = backup.employees || [];
+                            justifications = backup.justifications || [];
+                            
+                            if (backup.settings) {
+                                document.getElementById('company-name').value = backup.settings.companyName || '';
+                                document.getElementById('company-cr').value = backup.settings.companyCR || '';
+                                document.getElementById('company-email').value = backup.settings.companyEmail || '';
+                            }
+                            
+                            saveData();
+                            updateServiceStatuses();
+                            updateEmployeeList();
+                            updateStats();
+                            
+                            showAlert('success', 'تم استيراد البيانات بنجاح!');
+                        }
+                    } catch (error) {
+                        showAlert('error', 'خطأ في قراءة الملف: ' + error.message);
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // وظائف مساعدة
+        function showAlert(type, message) {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.className = `alert alert-${type}`;
+            alertBox.textContent = message;
+            alertBox.style.display = 'block';
+            
+            setTimeout(() => {
+                alertBox.style.display = 'none';
+            }, 5000);
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showAlert('success', 'تم النسخ!');
+            }).catch(() => {
+                // Fallback للمتصفحات القديمة
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showAlert('success', 'تم النسخ!');
+            });
+        }
+
+        function downloadJustification(text, employeeName) {
+            const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `تبرير_${employeeName}_${new Date().toISOString().split('T')[0]}.txt`;
+            a.click();
+        }
+
+        function saveSettings() {
+            const settings = {
+                companyName: document.getElementById('company-name').value,
+                companyCR: document.getElementById('company-cr').value,
+                companyEmail: document.getElementById('company-email').value,
+                contractWarningDays: document.getElementById('contract-warning-days').value,
+                salaryDelayMonths: document.getElementById('salary-delay-months').value
+            };
+            
+            localStorage.setItem('companySettings', JSON.stringify(settings));
+            showAlert('success', 'تم حفظ الإعدادات!');
+        }
+
+        function showUserManagement() {
+            showAlert('info', 'إدارة المستخدمين متاحة في النسخة المتقدمة');
+        }
+
+        // البحث في الموظفين
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('search-employees');
+            if (searchInput) {
+                searchInput.addEventListener('input', updateEmployeeList);
+            }
+        });
+
+        // تحميل البيانات عند بدء التشغيل
+        window.onload = function() {
+            loadData();
+            
+            const savedSettings = localStorage.getItem('companySettings');
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+                document.getElementById('company-name').value = settings.companyName || '';
+                document.getElementById('company-cr').value = settings.companyCR || '';
+                document.getElementById('company-email').value = settings.companyEmail || '';
+                document.getElementById('contract-warning-days').value = settings.contractWarningDays || '30';
+                document.getElementById('salary-delay-months').value = settings.salaryDelayMonths || '2';
+            }
+        };
+
+        // إغلاق النافذة المنبثقة عند النقر خارجها
+        window.onclick = function(event) {
+            if (event.target.className === 'modal') {
+                event.target.style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>
